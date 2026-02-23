@@ -1,4 +1,9 @@
 // Domain - Pure game logic (immutable)
-// Will contain: board, piece, rotation, collision, gravity, randomizer, scoring, gameState
+// Contains: board, piece, rotation, collision, gravity, randomizer, scoring, gameState
 
-export const DOMAIN_PLACEHOLDER = 'Domain module initialized';
+export * from './board.js';
+export * from './piece.js';
+export * from './collision.js';
+export * from './rotation.js';
+export * from './randomizer.js';
+export * from './gravity.js';

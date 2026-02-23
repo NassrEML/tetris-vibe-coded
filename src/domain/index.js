@@ -7,3 +7,7 @@ export * from './collision.js';
 export * from './rotation.js';
 export * from './randomizer.js';
 export * from './gravity.js';
+export * from './das.js';
+export * from './lock.js';
+export * from './scoring.js';
+export * from './level.js';

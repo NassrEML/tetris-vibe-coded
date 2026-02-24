@@ -11,3 +11,5 @@ export * from './das.js';
 export * from './lock.js';
 export * from './scoring.js';
 export * from './level.js';
+export * from './gameState.js';
+export * from './gameOver.js';

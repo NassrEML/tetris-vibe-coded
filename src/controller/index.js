@@ -1,4 +1,6 @@
-// Controller - Game loop and input handling
-// Will contain: gameLoop, inputController, gameController
+// Controller - Game orchestration and I/O handling
+// Contains: input handling, game loop, game controller
 
-export const CONTROLLER_PLACEHOLDER = 'Controller module initialized';
+export * from './inputController.js';
+export * from './gameLoop.js';
+export * from './gameController.js';

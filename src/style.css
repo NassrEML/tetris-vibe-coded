@@ -1,0 +1,416 @@
+/**
+ * Tetris NES 1989 - Pixel Perfect UI
+ * Fixed 256x224 resolution (NES native)
+ * No responsive design - exact NES look
+ */
+
+/* NES Color Palette - CSS Custom Properties */
+:root {
+  /* NES Base Colors */
+  --nes-black: #000000;
+  --nes-white: #ffffff;
+  --nes-gray: #7c7c7c;
+  --nes-dark-gray: #444444;
+  --nes-light-gray: #b8b8b8;
+  
+  /* Piece Colors (exact NES palette) */
+  --color-i: #00f0f0;  /* Cyan */
+  --color-o: #f0f000;  /* Yellow */
+  --color-t: #a000f0;  /* Purple */
+  --color-s: #00f000;  /* Green */
+  --color-z: #f00000;  /* Red */
+  --color-j: #0000f0;  /* Blue */
+  --color-l: #f0a000;  /* Orange */
+  
+  /* Game Boy Color Scheme (Alternative) */
+  --gb-black: #0f380f;
+  --gb-dark: #306230;
+  --gb-medium: #8bac0f;
+  --gb-light: #9bbc0f;
+  
+  /* UI Colors */
+  --bg-color: var(--nes-black);
+  --text-color: var(--nes-white);
+  --border-color: var(--nes-white);
+  --highlight-color: var(--nes-white);
+  
+  /* Board */
+  --board-bg: var(--nes-black);
+  --grid-line: #333333;
+  --cell-size: 16px;
+  --board-width: 160px;  /* 10 cells × 16px */
+  --board-height: 320px; /* 20 cells × 16px */
+  
+  /* Typography */
+  --font-family: 'Courier New', Courier, monospace;
+  --font-size: 16px;
+  --font-size-large: 24px;
+  --font-size-small: 12px;
+}
+
+/* Reset and Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #222;
+  overflow: hidden;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+}
+
+/* Game Container - Fixed NES Resolution */
+#app {
+  width: 512px;
+  height: 448px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--bg-color);
+  border: 4px solid #444;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Screen Containers */
+.screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === TITLE SCREEN === */
+#title-screen {
+  background-color: var(--nes-black);
+}
+
+#title-screen .logo {
+  font-size: 48px;
+  font-weight: bold;
+  letter-spacing: 8px;
+  margin-bottom: 60px;
+  color: var(--nes-white);
+  text-shadow: 4px 4px 0 var(--color-i);
+}
+
+#title-screen .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+#title-screen .menu-item {
+  font-size: var(--font-size-large);
+  cursor: pointer;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+}
+
+#title-screen .menu-item:hover,
+#title-screen .menu-item.selected {
+  border-color: var(--nes-white);
+  background-color: #333;
+}
+
+#title-screen .controls-hint {
+  position: absolute;
+  bottom: 40px;
+  font-size: var(--font-size-small);
+  color: var(--nes-light-gray);
+}
+
+/* === LEVEL SELECT SCREEN === */
+#level-select-screen {
+  background-color: var(--nes-black);
+}
+
+#level-select-screen .title {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+#level-select-screen .level-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  padding: 20px;
+}
+
+#level-select-screen .level-option {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--nes-white);
+  cursor: pointer;
+  font-size: var(--font-size);
+}
+
+#level-select-screen .level-option:hover,
+#level-select-screen .level-option.selected {
+  background-color: var(--nes-white);
+  color: var(--nes-black);
+}
+
+#level-select-screen .back-hint {
+  position: absolute;
+  bottom: 40px;
+  font-size: var(--font-size-small);
+  color: var(--nes-light-gray);
+}
+
+/* === GAME SCREEN === */
+#game-screen {
+  background-color: var(--nes-black);
+  padding: 20px;
+  justify-content: flex-start;
+  display: none;
+}
+
+#game-screen.active {
+  display: flex;
+}
+
+.game-container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Left Panel - Next Piece */
+.left-panel {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-title {
+  font-size: var(--font-size);
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--nes-light-gray);
+  text-transform: uppercase;
+}
+
+.next-piece-box {
+  width: 80px;
+  height: 80px;
+  border: 2px solid var(--nes-white);
+  background-color: var(--board-bg);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Center - Game Board */
+.board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board-wrapper {
+  position: relative;
+}
+
+#game-board {
+  width: var(--board-width);
+  height: var(--board-height);
+  border: 4px solid var(--border-color);
+  background-color: var(--board-bg);
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+}
+
+.board-cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 1px solid var(--grid-line);
+}
+
+/* Piece Cell Colors */
+.board-cell.piece-1 { background-color: var(--color-i); } /* I - Cyan */
+.board-cell.piece-2 { background-color: var(--color-o); } /* O - Yellow */
+.board-cell.piece-3 { background-color: var(--color-t); } /* T - Purple */
+.board-cell.piece-4 { background-color: var(--color-s); } /* S - Green */
+.board-cell.piece-5 { background-color: var(--color-z); } /* Z - Red */
+.board-cell.piece-6 { background-color: var(--color-j); } /* J - Blue */
+.board-cell.piece-7 { background-color: var(--color-l); } /* L - Orange */
+
+/* Right Panel - Stats */
+.right-panel {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.stat-box {
+  border: 2px solid var(--nes-white);
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: var(--font-size-small);
+  color: var(--nes-light-gray);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+
+/* === GAME OVER SCREEN === */
+#game-over-screen {
+  background-color: var(--nes-black);
+}
+
+#game-over-screen .game-over-text {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--color-z);
+  margin-bottom: 40px;
+}
+
+#game-over-screen .final-score {
+  font-size: var(--font-size-large);
+  margin-bottom: 20px;
+}
+
+#game-over-screen .high-score {
+  font-size: var(--font-size);
+  color: var(--nes-light-gray);
+  margin-bottom: 40px;
+}
+
+#game-over-screen .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#game-over-screen .menu-item {
+  font-size: var(--font-size);
+  cursor: pointer;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+}
+
+#game-over-screen .menu-item:hover,
+#game-over-screen .menu-item.selected {
+  border-color: var(--nes-white);
+  background-color: #333;
+}
+
+/* === PAUSE OVERLAY === */
+#pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+#pause-overlay.active {
+  display: flex;
+}
+
+#pause-overlay .pause-text {
+  font-size: 48px;
+  color: var(--nes-white);
+}
+
+/* === CONTROLS DISPLAY === */
+.controls-display {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--font-size-small);
+  color: var(--nes-light-gray);
+  text-align: center;
+}
+
+/* === NES STYLE UTILITIES === */
+.nes-text {
+  font-family: var(--font-family);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nes-border {
+  border: 4px solid var(--nes-white);
+  box-shadow: 4px 4px 0 var(--nes-dark-gray);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Next Piece Preview Grid */
+.next-piece-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 16px);
+  grid-template-rows: repeat(4, 16px);
+  gap: 0;
+}
+
+.next-piece-cell {
+  width: 16px;
+  height: 16px;
+}
+
+.next-piece-cell.piece-1 { background-color: var(--color-i); }
+.next-piece-cell.piece-2 { background-color: var(--color-o); }
+.next-piece-cell.piece-3 { background-color: var(--color-t); }
+.next-piece-cell.piece-4 { background-color: var(--color-s); }
+.next-piece-cell.piece-5 { background-color: var(--color-z); }
+.next-piece-cell.piece-6 { background-color: var(--color-j); }
+.next-piece-cell.piece-7 { background-color: var(--color-l); }
+
+/* Ghost piece (optional - not in NES but helpful) */
+.ghost-piece {
+  opacity: 0.3;
+}
+
+/* Animation for line clear flash */
+@keyframes lineClear {
+  0%, 100% { background-color: var(--nes-white); }
+  50% { background-color: var(--nes-black); }
+}
+
+.line-clearing {
+  animation: lineClear 0.2s ease-in-out 3;
+}

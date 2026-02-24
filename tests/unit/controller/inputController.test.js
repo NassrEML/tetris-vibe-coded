@@ -15,8 +15,8 @@ import {
   resetInput,
   ACTIONS,
   KEY_MAPPINGS
-} from '../../src/controller/inputController.js';
-import { DIRECTION_LEFT, DIRECTION_RIGHT, DIRECTION_NONE } from '../../src/domain/das.js';
+} from '../../../src/controller/inputController.js';
+import { DIRECTION_LEFT, DIRECTION_RIGHT, DIRECTION_NONE } from '../../../src/domain/das.js';
 
 describe('Input Controller', () => {
   let inputState;
